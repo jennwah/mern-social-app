@@ -41,14 +41,30 @@ router.param('postId', (req,res,next,id) => {
 })
 
 //get all posts
-router.get('/', (req,res)=> {
-    Post.find()
-    .populate('postedBy', '_id name photo')
-    .populate('comments', 'text created')
-    .populate('comments.commentedBy', '_id name')
-    .sort({"created": -1})
-    .then(posts => res.json(posts))
-    .catch(err => console.log(err))
+router.get('/',  async (req,res)=> {
+    // get current page from req.query or use default value of 1
+    const currentPage = req.query.page;
+    // return 3 posts per page
+    const perPage = 3;
+    let totalItems;
+
+    const posts = await Post.find()
+        // countDocuments() gives you total count of posts
+        .countDocuments()
+        .then(count => {
+            totalItems = count;
+            return Post.find()
+                .skip((currentPage - 1) * perPage)
+                .populate("comments", "text created")
+                .populate("comments.commentedBy", "_id name")
+                .populate("postedBy", "_id name")
+                .sort({ "created": -1 })
+                .limit(perPage)
+        })
+        .then(posts => {
+            res.json({posts, totalItems})
+        })
+        .catch(err => console.log(err))
 })
 
 //implement like functionality for post

@@ -17,14 +17,21 @@ class Posts extends Component {
         deleteMessage: {},
         comment: [],
         bookmarkMessage: [],
-        unbookmarkMessage: []
+        unbookmarkMessage: [],
+        page: 1,
+        noOfTimesForLoadMore: 1,
     }
 
     componentDidMount() {
-        axios.get('/api/posts/')
+        const page = this.state.page
+        axios.get(`/api/posts/?page=${page}`)
             .then(res => {
-                console.log(res.data)
-                this.setState({posts: res.data, loading: false})
+                console.log(res.data.posts)
+                let loadTimes = res.data.totalItems;
+                //calculate the number of times page can load for more posts to conditionally render the load more button
+                loadTimes = Math.floor(loadTimes/3);
+                console.log(loadTimes)
+                this.setState({posts: res.data.posts, loading: false, noOfTimesForLoadMore: loadTimes})
             })
             .catch(err=> console.log(err))
         
@@ -206,9 +213,28 @@ class Posts extends Component {
         }).catch(err => console.log(err.response))
     }
 
+    LoadMorePosts = () => {
+        let page = this.state.page
+        page = page +1;
+        let times = this.state.noOfTimesForLoadMore;
+        times = times -1;
+        console.log(times)
+        this.setState({page, noOfTimesForLoadMore:times})
+        console.log(page)
+        axios.get(`/api/posts/?page=${page}`)
+            .then(res => {
+                console.log(res.data.posts)
+                let beforeLoad = this.state.posts
+                let afterLoad = beforeLoad.concat(res.data.posts)
+                this.setState({posts: afterLoad})
+               
+            })
+            .catch(err=> console.log(err))
+    }
+
 
     render() {
-        const {loading, posts, deleteMessage,comment, bookmarkMessage,unbookmarkMessage} = this.state;
+        const {loading, posts, deleteMessage,comment, bookmarkMessage,unbookmarkMessage, noOfTimesForLoadMore} = this.state;
 
         return (
             <div className="container" style={{padding: "50px"}}>
@@ -217,7 +243,7 @@ class Posts extends Component {
     </UncontrolledAlert> : <></> }
             {loading ? <Spinner style={{ width: '3rem', height: '3rem' }} /> : 
                 <Container>
-                    <Col xs="12">
+                    <Col xs="12" style={{position:"relative"}}>
                             {posts.map((post,i) => {
                                 if (post.photo) {
                                     return (
@@ -344,7 +370,9 @@ class Posts extends Component {
                                     )
                                 }
                             })}
-                            
+                        {noOfTimesForLoadMore == 0 ? <></> : <div>
+                            <Button color="secondary" style={{position:"absolute", left:"40%"}} onClick={this.LoadMorePosts}>Load More</Button>    
+                        </div> }
                         
                     </Col>
                 </Container>
