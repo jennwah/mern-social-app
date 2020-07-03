@@ -1,0 +1,6 @@
+{
+    "/": "documentation for api routes",
+    "/api/users": "api for all users related routes",
+    "/api/posts": "api for all posts related routes",
+    "/api/auth": "api for auth related"
+}
