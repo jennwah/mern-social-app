@@ -25,6 +25,8 @@
 
 This is my first attempt in building a full-stack social app. Support by starring this repository and I hope more features can be added! 
 
+I have uploaded a 2-min video demo app on youtube [here](https://www.youtube.com/watch?v=on8xYyOScvE) for demonstration :)
+
 This project is solely for development purposes. 
 
 By Jenn Wah
