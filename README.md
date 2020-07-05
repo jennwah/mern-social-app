@@ -7,6 +7,7 @@
 4) User can like or dislike posts. User can comment on posts. 
 5) User can bookmark other posts to be saved into their collection. 
 6) Load more button feature to load more posts each time user click at home page. To improve web's optimization and scalability.
+7) Added 'View all comments' for posts with more than 2 comments. Clicking it will direct user to a single post page where it displays all the comments. This improve on the scalability and optimisation.
 
 
 ## Potential features to be added
