@@ -7,7 +7,8 @@ import {Link} from 'react-router-dom';
 import {isAuthenticated} from '../helpers/index';
 import axios from 'axios';
 import DefaultPhoto from '../images/user-default.jpg'
-import { before } from 'lodash';
+import { isInteger } from 'lodash';
+
 
 class Posts extends Component {
 
@@ -28,8 +29,13 @@ class Posts extends Component {
             .then(res => {
                 console.log(res.data.posts)
                 let loadTimes = res.data.totalItems;
+                loadTimes = loadTimes - 3;
                 //calculate the number of times page can load for more posts to conditionally render the load more button
-                loadTimes = Math.floor(loadTimes/3);
+                loadTimes = loadTimes / 3 ;
+                if (!isInteger(loadTimes)) {
+                    loadTimes = Math.floor(loadTimes)
+                    loadTimes = loadTimes + 1;
+                }
                 console.log(loadTimes)
                 this.setState({posts: res.data.posts, loading: false, noOfTimesForLoadMore: loadTimes})
             })
@@ -283,7 +289,7 @@ class Posts extends Component {
                                                 <span style={{fontWeight:"bold"}}>{post.likes.length}</span> like
                                             </div>}
                                         <div style={{marginTop:"0.5rem"}}>
-                                        {post.comments ? post.comments.map((comment,index) => {
+                                        {post.comments && post.comments.length <= 2 ? post.comments.map((comment,index) => {
                                             return <div style={{position: "relative"}}> 
                                                 <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
                                                 <span>{comment.text}</span>
@@ -292,6 +298,18 @@ class Posts extends Component {
                                                 : <></> } 
                                             </div>
                                         }) : <></> }
+                                        {/* handling more than 2 comments, allow user to click 'view all comments' and direct to single post component! */}
+                                        {post.comments && post.comments.length > 2 ? <Link to={`/post/${post._id}`}>View all {post.comments.length} comments</Link> : <></>}
+                                        {post.comments && post.comments.length > 2 ? 
+                                                post.comments.slice(0,2).map((comment, index) => {
+                                                return <div style={{position: "relative"}}> 
+                                                <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
+                                                <span>{comment.text}</span>
+                                                {comment.commentedBy._id == isAuthenticated().user._id ? 
+                                                    <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
+                                                : <></> } 
+                                            </div>
+                                        })   : <></>}
                                         </div>     
                                         <div style={{marginTop:"0.5rem"}}>
                                             <small>{this.timeSince(Date.parse(post.created))}</small>
@@ -342,7 +360,7 @@ class Posts extends Component {
                                                 <span style={{fontWeight:"bold"}}>{post.likes.length}</span> like
                                             </div>}
                                             <div style={{marginTop:"0.5rem"}}>
-                                            {post.comments ? post.comments.map((comment,index) => {
+                                            {post.comments && post.comments.length <= 2 ? post.comments.map((comment,index) => {
                                                 return <div style={{position:"relative"}}> 
                                                     <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
                                                     <span>{comment.text}</span>
@@ -351,6 +369,19 @@ class Posts extends Component {
                                                 : <></> }
                                                 </div>
                                             }) : <></> }
+                                            {/* handling more than 2 comments, allow user to click 'view all comments' and direct to single post component! */}
+                                            {post.comments && post.comments.length > 2 ? <Link to={`/post/${post._id}`}>View all {post.comments.length} comments</Link> : <></>}
+                                            {post.comments && post.comments.length > 2 ? 
+                                                    post.comments.slice(0,2).map((comment, index) => {
+                                                    return <div style={{position: "relative"}}> 
+                                                    <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
+                                                    <span>{comment.text}</span>
+                                                    {comment.commentedBy._id == isAuthenticated().user._id ? 
+                                                        <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
+                                                    : <></> } 
+                                                </div>
+                                            })   : <></>}
+
                                             </div>     
                                             <div style={{marginTop:"0.5rem"}}>
                                                 <small>{this.timeSince(Date.parse(post.created))}</small>

@@ -9,6 +9,7 @@ import Profile from './components/Profile';
 import EditProfile from './components/EditProfile';
 import CreatePost from './components/CreatePost';
 import Bookmark from './components/Bookmark';
+import SinglePost from './components/SinglePost';
 
  
  function App(props) {
@@ -22,6 +23,7 @@ import Bookmark from './components/Bookmark';
          <Route exact path="/user/edit/:userId" component={EditProfile}/>
          <Route exact path="/create/post" component={CreatePost}/>
          <Route exact path="/bookmark" component={Bookmark}/>
+         <Route exact path="/post/:postId" component={SinglePost}/>
        </Router>
      </div>
    );

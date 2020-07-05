@@ -268,15 +268,27 @@ class PostsInProfile extends Component {
                                                 <span style={{fontWeight:"bold"}}>{post.likes.length}</span> like
                                             </div>}
                                         <div style={{marginTop:"0.5rem"}}>
-                                            {post.comments ? post.comments.map((comment,index) => {
-                                                return <div style={{position:"relative"}}> 
+                                            {post.comments && post.comments.length <= 2 ? post.comments.map((comment,index) => {
+                                                return <div style={{position: "relative"}}> 
                                                     <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
                                                     <span>{comment.text}</span>
                                                     {comment.commentedBy._id == isAuthenticated().user._id ? 
-                                                    <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
-                                                : <></> }
+                                                        <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
+                                                    : <></> } 
                                                 </div>
                                             }) : <></> }
+                                            {/* handling more than 2 comments, allow user to click 'view all comments' and direct to single post component! */}
+                                            {post.comments && post.comments.length > 2 ? <Link to={`/post/${post._id}`}>View all {post.comments.length} comments</Link> : <></>}
+                                            {post.comments && post.comments.length > 2 ? 
+                                                    post.comments.slice(0,2).map((comment, index) => {
+                                                    return <div style={{position: "relative"}}> 
+                                                    <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
+                                                    <span>{comment.text}</span>
+                                                    {comment.commentedBy._id == isAuthenticated().user._id ? 
+                                                        <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
+                                                    : <></> } 
+                                                </div>
+                                            })   : <></>}
                                         </div>    
                                         <div style={{marginTop:"0.5rem"}}>
                                             <small>{this.timeSince(Date.parse(post.created))}</small>
@@ -327,15 +339,27 @@ class PostsInProfile extends Component {
                                                 <span style={{fontWeight:"bold"}}>{post.likes.length}</span> like
                                             </div>}
                                             <div style={{marginTop:"0.5rem"}}>
-                                                {post.comments ? post.comments.map((comment,index) => {
-                                                    return <div style={{position:"relative"}}> 
+                                                {post.comments && post.comments.length <= 2 ? post.comments.map((comment,index) => {
+                                                    return <div style={{position: "relative"}}> 
                                                         <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
                                                         <span>{comment.text}</span>
                                                         {comment.commentedBy._id == isAuthenticated().user._id ? 
-                                                    <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
-                                                : <></> }
+                                                            <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
+                                                        : <></> } 
                                                     </div>
                                                 }) : <></> }
+                                                {/* handling more than 2 comments, allow user to click 'view all comments' and direct to single post component! */}
+                                                {post.comments && post.comments.length > 2 ? <Link to={`/post/${post._id}`}>View all {post.comments.length} comments</Link> : <></>}
+                                                {post.comments && post.comments.length > 2 ? 
+                                                        post.comments.slice(0,2).map((comment, index) => {
+                                                        return <div style={{position: "relative"}}> 
+                                                        <Link to={`/user/${comment.commentedBy._id}`}><span style={{fontWeight:"bold", color:"black", textDecoration:"none"}}>{comment.commentedBy.name} </span></Link>
+                                                        <span>{comment.text}</span>
+                                                        {comment.commentedBy._id == isAuthenticated().user._id ? 
+                                                            <div style={{position: "absolute", right:"0", top:"0"}}><FontAwesomeIcon icon={faTrashAlt} style={{cursor:"pointer"}} onClick={() => this.handleCommentDelete(comment, post,i)}/></div> 
+                                                        : <></> } 
+                                                    </div>
+                                                })   : <></>}
                                             </div>
                                             <div style={{marginTop:"0.5rem"}}>
                                                 <small>{this.timeSince(Date.parse(post.created))}</small>

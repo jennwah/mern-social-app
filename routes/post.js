@@ -26,7 +26,6 @@ router.param('userId', (req,res,next,id) => {
 //for any route containing :postId
 router.param('postId', (req,res,next,id) => {
     Post.findById(id)
-    .select('_id body created postedBy photo likes')
     .populate('postedBy', '_id name photo')
     .populate('comments', 'text created')
     .populate('comments.commentedBy', '_id name')
@@ -241,6 +240,11 @@ router.delete('/delete/:postId', requireLoggedIn, isPoster, (req,res) => {
             res.json({message: 'Post deleted succesfully!'})
         }
     })
+})
+
+//to get a single post
+router.get('/post/:postId', (req,res) => {
+    return res.json(req.post)
 })
 
 //separate route to get post's photo
